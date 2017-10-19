@@ -1,0 +1,58 @@
+{
+  "name": "memoized-keyv",
+  "version": "1.0.0-0",
+  "description": "Memoize using keyv as storage backend.",
+  "keywords": [
+    "key",
+    "value",
+    "store",
+    "cache",
+    "ttl",
+    "memoize"
+  ],
+  "repository": "https://github.com/moeriki/memoized-keyv",
+  "bugs": "https://github.com/moeriki/memoized-keyv/issues",
+  "homepage": "https://github.com/moeriki/memoized-keyv",
+  "author": "Dieter Luypaert <dieterluypaert@gmail.com>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "xo && jest",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "mimic-fn": "^1.1.0"
+  },
+  "peerDependencies": {
+    "keyv": "^1 || ^2 || ^3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "delay": "^2.0.0",
+    "eslint-config-xo-lukechilds": "^1.0.1",
+    "jest": "^21.2.1",
+    "keyv": "^3.0.0",
+    "xo": "^0.18.2"
+  },
+  "xo": {
+    "extends": "xo-lukechilds",
+    "rules": {
+      "operator-linebreak": 0
+    },
+    "overrides": [
+      {
+        "files": "test/**.js",
+        "envs": [
+          "node",
+          "jest"
+        ]
+      }
+    ]
+  }
+}
