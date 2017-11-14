@@ -12,6 +12,15 @@ const asyncSum = (...numbers) => numbers.reduce(
 	Promise.resolve(0)
 );
 
+const deferred = () => {
+	const defer = {};
+	defer.promise = new Promise((resolve, reject) => {
+		defer.resolve = resolve;
+		defer.reject = reject;
+	});
+	return defer;
+};
+
 const syncSum = (...numbers) => numbers.reduce((sum, n) => sum + n, 0);
 
 describe('memoizedKeyv', () => {
@@ -30,6 +39,16 @@ describe('memoizedKeyv', () => {
 	it('should return result', async () => {
 		const memoized = memoize(asyncSum);
 		expect(await memoized(1, 2)).toBe(3);
+	});
+
+	it('should return pending result', async () => {
+		const defer = deferred();
+		const spy = jest.fn(() => defer.promise);
+		const memoized = memoize(spy);
+		const results = Promise.all([memoized('test'), memoized('test')]);
+		defer.resolve('result');
+		expect(await results).toEqual(['result', 'result']);
+		expect(spy).toHaveBeenCalledTimes(1);
 	});
 
 	it('should return cached result', async () => {
