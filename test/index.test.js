@@ -61,6 +61,25 @@ describe('memoizedKeyv', () => {
 		expect(asyncSum).not.toHaveBeenCalled();
 	});
 
+	it('should throw error', async () => {
+		const error = new Error('NOPE');
+		const memoized = memoize(() => Promise.reject(error));
+		try {
+			await memoized();
+		} catch (err) {
+			expect(err).toBe(error);
+		}
+		expect.assertions(1);
+	});
+
+	it('should not cache error', async () => {
+		const spy = jest.fn(() => Promise.reject(new Error('NOPE')));
+		const memoized = memoize(spy);
+		await memoized().catch(() => { /* noop */ });
+		await memoized().catch(() => { /* noop */ });
+		expect(spy).toHaveBeenCalledTimes(2);
+	});
+
 	it('should return fresh result', async () => {
 		const memoizedSum = memoize(asyncSum, null, { stale: 10 });
 		memoizedSum.keyv.set('5', 5, 20);
