@@ -2,13 +2,12 @@
 
 require('babel-polyfill'); // eslint-disable-line import/no-unassigned-import
 
-const delay = require('delay');
 const Keyv = require('keyv');
 
 const memoize = require('../lib');
 
 const asyncSum = (...numbers) => numbers.reduce(
-	(wait, n) => wait.then(sum => delay(n).then(() => sum + n)),
+	(wait, n) => wait.then(sum => sum + n),
 	Promise.resolve(0)
 );
 

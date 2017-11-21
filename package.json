@@ -36,7 +36,6 @@
     "babel-jest": "^21.2.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "delay": "^2.0.0",
     "eslint-config-xo-lukechilds": "^1.0.1",
     "jest": "^21.2.1",
     "keyv": "^3.0.0",
