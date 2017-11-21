@@ -24,7 +24,9 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "mimic-fn": "^1.1.0"
+    "json-buffer": "^3.0.0",
+    "mimic-fn": "^1.1.0",
+    "p-any": "^1.1.0"
   },
   "peerDependencies": {
     "keyv": "^1 || ^2 || ^3"
