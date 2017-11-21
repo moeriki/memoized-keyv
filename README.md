@@ -59,6 +59,8 @@ const memoized = memoize(sum, new Keyv(), {
 memoized(1, 2); // cached as { '1+2': 3 }
 ```
 
+**Note** that `memoized-keyv` uses flood protection internally based on the result of this resolver. This means you can make as many requests as you want simultaneously while being sure you won't flood your async resource.
+
 ### TTL
 
 Set `ttl` to a `number` for a static TTL value.
@@ -79,6 +81,23 @@ const memoizedRequest = memoize(request, new Keyv(), {
 memoizedRequest('http://example.com'); // cached for 60 seconds only if response was 200 OK
 ```
 
+### Stale
+
+Set `stale` to any `number` of milliseconds.
+
+If the `ttl` of a requested resource is below this staleness threshold we will still return the stale value but meanwhile asynchronously refresh the value.
+
+```js
+const memoizedRequest = memoize(request, new Keyv(), { stale: 10000, ttl: 60000 });
+memoizedRequest('http://example.com'); // cached for 60 seconds
+// … 55 seconds later
+// Our cache will expire in 5 seconds.
+// This is below the staleness threshold of 10 seconds.
+memoizedRequest('http://example.com'); // returns cached result + refresh cache
+```
+
+When the `stale` option is set we won't delete expired items either. The same logic as above applies.
+
 ## API
 
 ### `memoize(func[, keyv[, options]]) :function`
@@ -86,5 +105,6 @@ memoizedRequest('http://example.com'); // cached for 60 seconds only if response
 * func `:function`
 * keyv `:object|string`
 * options `:object`
+* options.stale `:number`
 * options.ttl `:function|number`
 * options.resolver `:function`
