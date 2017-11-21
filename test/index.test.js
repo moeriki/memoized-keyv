@@ -6,11 +6,6 @@ const Keyv = require('keyv');
 
 const memoize = require('../lib');
 
-const asyncSum = (...numbers) => numbers.reduce(
-	(wait, n) => wait.then(sum => sum + n),
-	Promise.resolve(0)
-);
-
 const deferred = () => {
 	const defer = {};
 	defer.promise = new Promise((resolve, reject) => {
@@ -20,9 +15,18 @@ const deferred = () => {
 	return defer;
 };
 
-const syncSum = (...numbers) => numbers.reduce((sum, n) => sum + n, 0);
-
 describe('memoizedKeyv', () => {
+	let syncSum;
+	let asyncSum;
+
+	beforeEach(() => {
+		syncSum = (...numbers) => numbers.reduce((sum, n) => sum + n, 0);
+		asyncSum = jest.fn((...numbers) => numbers.reduce(
+			(wait, n) => wait.then(sum => sum + n),
+			Promise.resolve(0)
+		));
+	});
+
 	it('should store result as arg0', async () => {
 		const memoizedSum = memoize(asyncSum);
 		await memoizedSum(1, 2);
@@ -51,11 +55,59 @@ describe('memoizedKeyv', () => {
 	});
 
 	it('should return cached result', async () => {
-		const spy = jest.fn(asyncSum);
-		const memoized = memoize(spy);
+		const memoized = memoize(asyncSum);
 		await memoized.keyv.set('5', 5);
 		await memoized(5);
-		expect(spy).not.toHaveBeenCalled();
+		expect(asyncSum).not.toHaveBeenCalled();
+	});
+
+	it('should return fresh result', async () => {
+		const memoizedSum = memoize(asyncSum, null, { stale: 10 });
+		memoizedSum.keyv.set('5', 5, 20);
+		expect(await memoizedSum(5)).toBe(5);
+		expect(asyncSum).not.toHaveBeenCalled();
+	});
+
+	it('should return stale result but refresh', async done => {
+		const memoizedSum = memoize(asyncSum, null, { stale: 10 });
+		await memoizedSum.keyv.set('1', 1, 5);
+		const sum = await memoizedSum(1, 2);
+		expect(sum).toBe(1);
+		expect(asyncSum).toHaveBeenCalledWith(1, 2);
+		memoizedSum.keyv.on('memoize.fresh.value', value => {
+			expect(value).toBe(3);
+			done();
+		});
+	});
+
+	it('should emit on stale refresh error', async done => {
+		asyncSum.mockImplementation(() => Promise.reject(new Error('NOPE')));
+		const memoizedSum = memoize(asyncSum, null, { stale: 10 });
+		await memoizedSum.keyv.set('1', 1, 5);
+		memoizedSum(1);
+		memoizedSum.keyv.on('memoize.fresh.error', err => {
+			expect(err).toMatchSnapshot();
+			done();
+		});
+	});
+
+	it('should return cached result if a stale refresh is pending', async () => {
+		const defer = deferred();
+		asyncSum.mockImplementation(() => defer.promise);
+		const memoizedSum = memoize(asyncSum, null, { stale: 10 });
+		await memoizedSum.keyv.set('1', 1, 5);
+		expect(await memoizedSum(1)).toBe(1);
+		expect(await memoizedSum(1)).toBe(1);
+		expect(asyncSum).toHaveBeenCalledTimes(1);
+	});
+
+	it('should delete expired result and return fresh result', async done => {
+		const memoizedSum = memoize(asyncSum);
+		await memoizedSum.keyv.set('1', 1, 1);
+		setTimeout(async () => {
+			expect(await memoizedSum(1, 2)).toBe(3);
+			done();
+		}, 5);
 	});
 
 	it('should not store result if undefined', async () => {
