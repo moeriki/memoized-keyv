@@ -20,8 +20,7 @@
     "node": ">=4"
   },
   "scripts": {
-    "test": "xo && jest",
-    "test:coverage": "jest --coverage"
+    "test": "xo && jest --coverage"
   },
   "dependencies": {
     "json-buffer": "^3.0.0",
