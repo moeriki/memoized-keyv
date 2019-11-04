@@ -26,21 +26,18 @@
     "test": "xo && jest --coverage"
   },
   "dependencies": {
-    "mimic-fn": "^1.1.0",
-    "p-any": "^1.1.0"
+    "json-buffer": "^3.0.0",
+    "mimic-fn": "~3.0.0",
+    "p-any": "~2.1.0"
   },
   "peerDependencies": {
     "keyv": "^1 || ^2 || ^3 || ^4"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-jest": "^21.2.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
     "eslint-config-xo-lukechilds": "^1.0.1",
-    "jest": "^21.2.1",
+    "jest": "~24.9.0",
     "keyv": "^3.0.0",
-    "xo": "^0.18.2"
+    "xo": "~0.18.2"
   },
   "xo": {
     "extends": "xo-lukechilds",

@@ -1,6 +1,5 @@
 coverage/
 node_modules/
 test/
-.babelrc
 .editorconfig
 .travis.yml

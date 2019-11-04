@@ -1,7 +1,5 @@
 'use strict';
 
-require('babel-polyfill'); // eslint-disable-line import/no-unassigned-import
-
 const Keyv = require('keyv');
 
 const memoize = require('../lib');
