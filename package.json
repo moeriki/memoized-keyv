@@ -19,7 +19,9 @@
   "engines": {
     "node": ">=4"
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "xo && jest --coverage"
   },
