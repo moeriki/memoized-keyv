@@ -30,7 +30,7 @@
     "p-any": "^1.1.0"
   },
   "peerDependencies": {
-    "keyv": "^1 || ^2 || ^3"
+    "keyv": "^1 || ^2 || ^3 || ^4"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
